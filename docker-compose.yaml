@@ -1,0 +1,17 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  cpu-stress:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+        reservations:
+          cpus: '0.25'
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
