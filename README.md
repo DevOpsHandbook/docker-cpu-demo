@@ -43,35 +43,53 @@ cd docker-cpu-demo
 docker-compose up --build
 ```
 
+## Features
+
+- Docker container with configurable CPU and RAM limits
+- Flask REST API for controlling CPU and RAM stress tests
+- Real-time monitoring capabilities
+- Resource usage constraints (50% CPU limit, 25% CPU reservation, and RAM stress simulation)
+- Simple web interface for interaction
+
 ## Usage
 
-The application exposes several HTTP endpoints for controlling the CPU stress test:
+The application exposes several HTTP endpoints for controlling the CPU and RAM stress tests:
 
 ### API Endpoints
 
-1. Check Server Status
-```bash
-curl http://localhost:5000/
-```
+1. **Check Server Status**
+    ```bash
+    curl http://localhost:5000/
+    ```
 
-2. Start CPU Stress Test
-```bash
-curl http://localhost:5000/start
-```
+2. **Start CPU Stress Test**
+    ```bash
+    curl http://localhost:5000/start_cpu
+    ```
 
-3. Check Current Status
-```bash
-curl http://localhost:5000/status
-```
+3. **Stop CPU Stress Test**
+    ```bash
+    curl http://localhost:5000/stop_cpu
+    ```
 
-4. Stop CPU Stress Test
-```bash
-curl http://localhost:5000/stop
-```
+4. **Start RAM Stress Test**
+    ```bash
+    curl http://localhost:5000/start_ram
+    ```
+
+5. **Stop RAM Stress Test**
+    ```bash
+    curl http://localhost:5000/stop_ram
+    ```
+
+6. **Check Current Status**
+    ```bash
+    curl http://localhost:5000/status
+    ```
 
 ### Monitoring Resource Usage
 
-To monitor the container's CPU usage:
+To monitor the container's CPU and RAM usage:
 ```bash
 docker stats
 ```
@@ -80,20 +98,22 @@ You should observe that the CPU usage never exceeds 50% of a single core, demons
 
 ## Configuration
 
-### CPU Limits
+### CPU and RAM Limits
 
-The CPU limits are configured in `docker-compose.yml`:
+The resource limits are configured in `docker-compose.yml`:
 
 ```yaml
 deploy:
   resources:
     limits:
       cpus: '0.50'    # Maximum CPU usage (50%)
+      memory: '512M'  # Maximum memory limit (512MB)
     reservations:
       cpus: '0.25'    # Reserved CPU (25%)
+      memory: '256M'  # Reserved memory (256MB)
 ```
 
-You can modify these values to experiment with different CPU limitations.
+You can modify these values to experiment with different CPU and RAM limitations.
 
 ## Technical Details
 
@@ -127,8 +147,10 @@ You can modify these values to experiment with different CPU limitations.
 {
     "status": "Server is running",
     "instructions": {
-        "start_test": "GET /start",
-        "stop_test": "GET /stop",
+        "start_cpu_test": "GET /start_cpu",
+        "stop_cpu_test": "GET /stop_cpu",
+        "start_ram_test": "GET /start_ram",
+        "stop_ram_test": "GET /stop_ram",
         "check_status": "GET /status"
     }
 }
@@ -143,13 +165,43 @@ You can modify these values to experiment with different CPU limitations.
 }
 ```
 
+### Start RAM Test
+```json
+{
+    "message": "RAM stress test started",
+    "status": "running",
+    "start_time": "2024-11-25 10:31:00"
+}
+```
+
+### Stop CPU Test
+```json
+{
+    "message": "CPU stress test stopped",
+    "status": "stopped",
+    "duration_seconds": 120.5
+}
+```
+
+### Stop RAM Test
+```json
+{
+    "message": "RAM stress test stopped",
+    "status": "stopped",
+    "duration_seconds": 90.2
+}
+```
+
 ### Status Check
 ```json
 {
-    "stress_test_active": true,
-    "current_time": "2024-11-25 10:30:15",
-    "running_duration_seconds": 15.5,
-    "start_time": "2024-11-25 10:30:00"
+    "cpu_stress_test_active": true,
+    "ram_stress_test_active": true,
+    "current_time": "2024-11-25 10:32:00",
+    "cpu_running_duration_seconds": 120.5,
+    "cpu_start_time": "2024-11-25 10:30:00",
+    "ram_running_duration_seconds": 60.5,
+    "ram_start_time": "2024-11-25 10:31:00"
 }
 ```
 
@@ -179,7 +231,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Future Improvements
 
-- [ ] Add graphical CPU usage visualization
+- [ ] Add graphical CPU and RAM usage visualization.
 - [ ] Include memory stress testing
 - [ ] Add more detailed monitoring metrics
 - [ ] Implement WebSocket for real-time updates
