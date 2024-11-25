@@ -99,9 +99,19 @@ You can modify these values to experiment with different CPU limitations.
 
 ### Resource Management
 
-- The container is limited to using 50% of a CPU core
-- A minimum of 25% CPU is reserved for the container
-- Docker enforces these limits using cgroups
+- **CPU Constraints:**
+  - The container is limited to using 50% of a single CPU core.
+  - A minimum of 25% CPU is reserved for the container.
+  - Docker enforces CPU limits using cgroups, ensuring that the application cannot exceed the allocated CPU resources.
+
+- **RAM Constraints:**
+  - The container is limited to a maximum of 512MB of RAM.
+  - A minimum of 256MB of RAM is reserved for the container.
+  - Docker enforces memory usage limits using cgroups, which ensures that the application cannot consume more memory than allocated.
+
+- **Stress Simulation:**
+  - The CPU stress test uses intensive calculations to simulate heavy CPU usage.
+  - The RAM stress test allocates large memory blocks to simulate heavy memory consumption.
 
 ### Implementation
 
